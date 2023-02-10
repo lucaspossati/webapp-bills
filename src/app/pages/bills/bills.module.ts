@@ -20,6 +20,7 @@ import {
 import { TablesRoutingModule } from '../tables/tables-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ExpensesInMonthComponent } from './expenses-in-month/expenses-in-month.component';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { ExpensesInMonthComponent } from './expenses-in-month/expenses-in-month.
   declarations: [
     SalaryComponent,
     ExpensesInMonthComponent,
-    BillsComponent
+    BillsComponent,
+    LoginComponent
   ],
   
 })

@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
+import { NbAuthJWTToken, NbAuthModule, NbDummyAuthStrategy, NbPasswordAuthStrategy } from '@nebular/auth';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
 import { of as observableOf } from 'rxjs';
 
@@ -106,17 +106,60 @@ export const NB_CORE_PROVIDERS = [
   ...NbAuthModule.forRoot({
 
     strategies: [
-      NbDummyAuthStrategy.setup({
+      NbPasswordAuthStrategy.setup({
         name: 'email',
-        delay: 3000,
+        baseEndpoint: 'https://localhost:44312/v1',
+        token: {
+          class: NbAuthJWTToken,
+          key: 'data.token'
+        },
+        login: {
+          endpoint: '/authentication',
+          method: 'post',
+        },
+        register: {
+          endpoint: '/users',
+          method: 'post',
+        },
       }),
     ],
     forms: {
       login: {
-        socialLinks: socialLinks,
+        redirectDelay: 500, 
+        strategy: 'email',  
+        rememberMe: true,   
+        showMessages: {     
+          success: true,
+          error: true,
+        },
       },
       register: {
-        socialLinks: socialLinks,
+        redirectDelay: 500,
+        strategy: 'email',
+        
+        showMessages: {
+          success: true,
+          error: true,
+        },
+        terms: false,
+      },
+      validation: {
+        password: {
+          required: true,
+          minLength: 4,
+          maxLength: 50,
+        },
+        email: {
+          required: true,
+        },
+        fullName: {
+          required: true,
+          minLength: 4,
+          maxLength: 50,
+        },
+        logout: {
+          redirectDelay: 0,
+        },
       },
     },
   }).providers,
