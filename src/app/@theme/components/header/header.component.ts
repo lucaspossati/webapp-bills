@@ -6,6 +6,8 @@ import { LayoutService } from '../../../@core/utils';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../../models/user';
 
 @Component({
   selector: 'ngx-header',
@@ -17,6 +19,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
   user: any;
+  loggedUser: User;
 
   themes = [
     {
@@ -53,20 +56,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
               private themeService: NbThemeService,
-              private userService: UserData,
+              private userService: UserService,
               private authService: NbAuthService,
               private layoutService: LayoutService,
               private nbMenuService: NbMenuService,
               private breakpointService: NbMediaBreakpointsService,) {
 
-    this.authService.onTokenChange()
-      .subscribe((token: NbAuthJWTToken) => {
+    this.authService.onTokenChange().subscribe((token: NbAuthJWTToken) => {
       
-        if (token.isValid()) {
-          this.user = token.getPayload(); // here we receive a payload from the token and assigns it to our `user` variable 
-        }
+      if (token.isValid()) {
+        this.user = token.getPayload();
+        this.getAndSetUser();
+      }
         
-      });
+    });
+    
   }
 
   ngOnInit() {
@@ -119,5 +123,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateHome() {
     this.menuService.navigateHome();
     return false;
+  }
+
+  getAndSetUser(){
+    this.userService.getByEmail(this.user.email).subscribe((resp: any) => {
+      this.loggedUser = resp.data;
+      this.loggedUser.password = null;
+      localStorage.setItem('logged_user', JSON.stringify(this.loggedUser))
+    });
   }
 }

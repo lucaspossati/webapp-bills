@@ -17,16 +17,20 @@ export class AuthInterceptor implements HttpInterceptor {
   token : string;
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.token = JSON.parse(localStorage.getItem('auth_app_token')).value;
 
-    if(this.token !== null){
-        const authRequest= req.clone({
-            setHeaders: {
-              Authorization: `Bearer ${this.token}`
-            }
-        });
+    const objWithToken = JSON.parse(localStorage.getItem('auth_app_token'));
 
-        return next.handle(authRequest);
+    if(objWithToken != null){
+      this.token = objWithToken.value;
+
+      const authRequest= req.clone({
+          setHeaders: {
+            Authorization: `Bearer ${this.token}`
+          }
+      });
+
+      return next.handle(authRequest);
+      
     }
 
     return next.handle(req);

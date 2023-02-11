@@ -23,5 +23,7 @@ export class SpentInMonthService {
     return this.http.get<any>(`${this.urls.v1}/${id}`).pipe(map(resp => resp));
   }
 
-  
+  getByIdUser(id: string): Observable<any> {
+    return this.http.get<any>(`${this.urls.v1}/get-by-id-user/${id}`).pipe(map(resp => resp));
+  }
 }

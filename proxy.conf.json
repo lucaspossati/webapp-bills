@@ -1,0 +1,6 @@
+{
+  "/api": {
+    "target": "https://localhost:44312/v1/",
+    "secure": false
+  }
+}

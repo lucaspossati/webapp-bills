@@ -14,12 +14,7 @@ import { AuthInterceptor } from '../security/auth.interceptor';
 
 @NgModule({
   providers: [
-    AuthGuardService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
+    AuthGuardService
   ],
   imports: [
     PagesRoutingModule,

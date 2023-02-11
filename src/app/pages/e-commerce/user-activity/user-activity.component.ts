@@ -3,6 +3,8 @@ import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
 
 import { UserActivityData, UserActive } from '../../../@core/data/user-activity';
+import { User } from '../../../models/user';
+import { GlobalService } from '../../../services/global.service';
 import { SpentInMonthService } from '../../../services/spent-in-month.service';
 
 @Component({
@@ -14,6 +16,7 @@ export class ECommerceUserActivityComponent implements OnDestroy {
 
   private alive = true;
   spents: any = [];
+  loggedUser: User = new User();
 
   userActivity: UserActive[] = [];
   type = 'month';
@@ -22,6 +25,7 @@ export class ECommerceUserActivityComponent implements OnDestroy {
 
   constructor(private themeService: NbThemeService,
               private spentInMonth: SpentInMonthService,
+              private globalService: GlobalService,
               private userActivityService: UserActivityData) {
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
@@ -30,6 +34,8 @@ export class ECommerceUserActivityComponent implements OnDestroy {
     });
 
     this.getUserActivity(this.type);
+    this.loggedUser = this.globalService.getLoggedUser();
+
     this.getSpents();
   }
 
@@ -46,8 +52,9 @@ export class ECommerceUserActivityComponent implements OnDestroy {
   }
 
   getSpents(){
-    this.spentInMonth.getAll().subscribe((resp: any) => {
+    this.spentInMonth.getByIdUser(this.loggedUser.id).subscribe((resp: any) => {
       this.spents = resp.data;
     });
   }
+  
 }
