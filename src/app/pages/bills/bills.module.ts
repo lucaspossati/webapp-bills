@@ -20,10 +20,20 @@ import {
 import { TablesRoutingModule } from '../tables/tables-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ExpensesInMonthComponent } from './expenses-in-month/expenses-in-month.component';
-import { LoginComponent } from './login/login.component';
+import { AuthGuardService } from '../../auth-guard.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from '../../security/auth.interceptor';
 
 
 @NgModule({
+  providers: [
+    AuthGuardService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   imports: [
     ThemeModule,
     NbInputModule,
@@ -46,8 +56,7 @@ import { LoginComponent } from './login/login.component';
   declarations: [
     SalaryComponent,
     ExpensesInMonthComponent,
-    BillsComponent,
-    LoginComponent
+    BillsComponent
   ],
   
 })

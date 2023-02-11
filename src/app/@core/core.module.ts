@@ -118,7 +118,7 @@ export const NB_CORE_PROVIDERS = [
           method: 'post',
         },
         register: {
-          endpoint: '/users',
+          endpoint: '/users/create-and-authenticate',
           method: 'post',
         },
       }),

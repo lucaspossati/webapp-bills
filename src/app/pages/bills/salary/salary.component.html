@@ -4,8 +4,8 @@
         <nb-card-header>Salary</nb-card-header>
         <nb-card-body>
             <form class="form-inline">
-            <input type="text" nbInput fullWidth placeholder="R$">
-            <button type="submit" nbButton status="primary">Save</button>
+            <input [(ngModel)]="user.salary" name="salary" type="text" nbInput fullWidth placeholder="R$">
+            <button type="submit" nbButton status="primary" (click)="updateUser()">Save</button>
             </form>
         </nb-card-body>
         </nb-card>
@@ -18,8 +18,8 @@
         <nb-card-header>Save Money</nb-card-header>
         <nb-card-body>
             <form class="form-inline">
-            <input type="text" nbInput fullWidth placeholder="R$">
-            <button type="submit" nbButton status="primary">Save</button>
+            <input [(ngModel)]="user.salarySave" name="salarySave" type="text" nbInput fullWidth placeholder="R$">
+            <button type="submit" nbButton status="primary" (click)="updateUser()">Save</button>
             </form>
         </nb-card-body>
         </nb-card>

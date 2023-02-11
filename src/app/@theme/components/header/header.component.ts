@@ -3,7 +3,7 @@ import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeServ
 
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
-import { map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
 
@@ -39,7 +39,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
+  userMenu = [ 
+    { title: 'Profile' },
+    { 
+      title: 'Log out',
+      link: '/auth/login', 
+      click: () => {
+        this.authService.logout('email')
+      }
+    } 
+  ];
 
   constructor(private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
@@ -47,7 +56,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private userService: UserData,
               private authService: NbAuthService,
               private layoutService: LayoutService,
-              private breakpointService: NbMediaBreakpointsService) {
+              private nbMenuService: NbMenuService,
+              private breakpointService: NbMediaBreakpointsService,) {
 
     this.authService.onTokenChange()
       .subscribe((token: NbAuthJWTToken) => {
@@ -60,6 +70,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.nbMenuService.onItemClick()
+      .pipe(
+        filter(({ tag }) => tag === 'my-context-menu'),
+        map(({ item: { title } }) => title),
+      )
+      .subscribe(title => this.logout());
+
     this.currentTheme = this.themeService.currentTheme;
 
     const { xl } = this.breakpointService.getBreakpointsMap();
@@ -81,6 +98,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  logout(){
+    this.authService.logout('email');
+    localStorage.clear();
   }
 
   changeTheme(themeName: string) {
